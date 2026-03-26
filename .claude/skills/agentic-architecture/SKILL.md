@@ -13,15 +13,6 @@ Distilled from 8 Anthropic engineering publications (2024-2026). For full detail
 
 Agentic systems trade **latency and cost for better task performance**. Before building an agent, ask: can a single LLM call with retrieval + in-context examples solve this? Only add agentic patterns when simpler approaches fail.
 
-### Where 2026 updates 2024-2025 (newer wins)
-
-| Topic | 2024-2025 said | 2026 says | What to do |
-|-------|---------------|-----------|------------|
-| **Tool loading** | `defer_loading` + Tool Search Tool (85% token reduction) | Code Execution with MCP — tools as filesystem APIs (98.7% reduction) | For large tool sets (100+), prefer Code Execution with MCP. Tool Search still fine for 10-50 tools. |
-| **Single vs Multi-agent** | Default to single agent; multi-agent only when needed | Multi-agent coordination becoming standard; parallel reasoning across context windows | For complex workflows, **plan for multi-agent from the start**. Single-agent still fine for focused tasks. |
-| **Context management** | Compaction, structured notes, sub-agents to manage context | Data stays in execution sandbox, never enters model context at all | Prefer **keeping data out of context entirely** (code execution) over managing it once it's in (compaction). |
-| **Evals** | Eval-driven tool optimization; held-out test sets | Swiss Cheese model; agent-type-specific strategies; pass@k + pass^k; start from 20-50 real failures | Use the **2026 eval framework** — it's much more comprehensive. |
-
 ---
 
 ## 1. Tool Design (highest impact area)
@@ -33,7 +24,7 @@ Source: [Writing Tools for Agents](https://www.anthropic.com/engineering/writing
 Write tool descriptions as you would **onboard a new hire** — make implicit context explicit. Small refinements to descriptions yield dramatic improvements (Claude 3.5 Sonnet achieved SOTA on SWE-bench after tool description refinements alone).
 
 **Do:**
-- Define specialized terminology in the description (e.g. `"PO = purchase order = buy order"`)
+- Define specialized terminology in the description (e.g. `"დაბჟენა = filling = therapy"`)
 - Describe parameter enum values with synonyms and examples
 - Use `input_examples` for complex parameters (72% → 90% accuracy in Anthropic tests)
 - Return actionable errors: explain what went wrong + expected format + correct example
@@ -70,8 +61,8 @@ JSON Schema defines structure but cannot express **usage patterns**. `input_exam
 {
   "name": "lookup_pricing",
   "input_examples": [
-    {"service": "oil_change", "note": "user asked 'how much for an oil change?'"},
-    {"service": "tire_rotation", "note": "user asked 'tire rotation price?'"}
+    {"service": "therapy", "note": "user asked 'კბილის დაბჟენა რა ღირს?'"},
+    {"service": "implant", "note": "user asked 'იმპლანტი რა ღირს?'"}
   ]
 }
 ```
